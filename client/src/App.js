@@ -1,25 +1,40 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import './App.css';
+import RSVPListing from "./components/RSVPListing";
+import RSVPAdd from "./components/RSVPAdd";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state=
+        {
+          data:[]
+        }
+
+  }
+
+  RSVPcollection = () =>
+  {
+    fetch("/rsvp/")
+        .then(data => data.json())
+        .then( convertedData => this.setState({data:convertedData}))
+  };
+
+  componentDidMount() {
+    this.RSVPcollection()
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <Router>
+          <p>MAIN PAGE</p>
+          <RSVPListing dataReset={this.RSVPcollection} rsvps={this.state.data} />
+          {/*<Link to="/newRSVP">Add</Link>*/}
+          {/*<Route exact path="/newRSVP" component={() => <RSVPAdd dataReset={this.RSVPcollection}/>} />*/}
+          <RSVPAdd dataReset={this.RSVPcollection}/>
+        </Router>
       </div>
     );
   }
